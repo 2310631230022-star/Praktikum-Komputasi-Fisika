@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kode Praktikum Fisika Komputasi</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e2e;
+            color: #cdd6f4;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #89b4fa;
+            border-bottom: 2px solid #313244;
+            padding-bottom: 10px;
+        }
+        .session-container {
+            background-color: #181825;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            border: 1px solid #313244;
+        }
+        h2 {
+            color: #a6e3a1;
+            margin-top: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .copy-btn {
+            background-color: #89b4fa;
+            color: #11111b;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .copy-btn:hover {
+            background-color: #b4befe;
+        }
+        .copy-btn.copied {
+            background-color: #a6e3a1;
+        }
+        pre {
+            background-color: #11111b;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            border: 1px solid #313244;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            color: #cdd6f4;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🚀 Kode Praktikum: Regresi Least Square</h1>
+
+    <div class="session-container">
+        <h2>Sesi 1: Regresi Linear Manual <button class="copy-btn" onclick="copyCode('code1', this)">Copy Code</button></h2>
+        <pre><code id="code1"># ============================================================
+# SESI 1: Regresi Linear Least Square — dari Nol
+# Data: Pertumbuhan Tanaman (Dosis Pupuk vs Tinggi)
+# ============================================================
+import numpy as np
+import matplotlib.pyplot as plt
+
+# ─── DATA PERCOBAAN (dari modul, tabel 6.1) ───────────────
+x = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], dtype=float)
+y = np.array([2.1, 4.5, 8.3, 11.2, 15.8, 20.1, 25.3, 30.5, 36.2, 42.1, 48.5], dtype=float)
+n = len(x)
+
+print('=== DATA PERTUMBUHAN TANAMAN ===')
+print(f'Jumlah data: n = {n}')
+print(f'x-range: [{x.min()}, {x.max()}]')
+print(f'y-range: [{y.min()}, {y.max()}]')
+
+# ─── IMPLEMENTASI MANUAL (TANPA numpy.polyfit) ────────────
+# Hitung semua jumlah yang diperlukan
+sum_x  = np.sum(x)
+sum_y  = np.sum(y)
+sum_xy = np.sum(x * y)
+sum_x2 = np.sum(x**2)
+x_bar  = sum_x / n
+y_bar  = sum_y / n
+
+print(f'\nStatistik dasar:')
+print(f'Σx = {sum_x:.4f}')
+print(f'Σy = {sum_y:.4f}')
+print(f'x̄ = {x_bar:.4f}')
+print(f'ȳ = {y_bar:.4f}')
+print(f'Σxy = {sum_xy:.4f}')
+print(f'Σx² = {sum_x2:.4f}')
+
+# Formula Normal Equations
+b = (n * sum_xy - sum_x * sum_y) / (n * sum_x2 - sum_x**2)
+a = y_bar - b * x_bar
+
+print(f'\n=== HASIL REGRESI LINEAR ===')
+print(f'Kemiringan b = {b:.6f}')
+print(f'Intersep   a = {a:.6f}')
+print(f'Persamaan: y = {a:.4f} + {b:.4f}·x')
+
+# Hitung R²
+y_pred = a + b * x
+SS_res = np.sum((y - y_pred)**2)
+SS_tot = np.sum((y - y_bar)**2)
+R2     = 1 - SS_res / SS_tot
+RMSE   = np.sqrt(SS_res / n)
+
+print(f'\nMetrik kualitas:')
+print(f'SS_res = {SS_res:.4f}')
+print(f'SS_tot = {SS_tot:.4f}')
+print(f'R²     = {R2:.6f} ({R2*100:.3f}%)')
+print(f'RMSE   = {RMSE:.4f} cm')
+
+# Verifikasi dengan numpy.polyfit
+coef_np = np.polyfit(x, y, 1)
+print(f'\nVerifikasi numpy.polyfit: b={coef_np[0]:.6f}, a={coef_np[1]:.6f}')
+print(f'Selisih: Δb={abs(b-coef_np[0]):.2e}, Δa={abs(a-coef_np[1]):.2e}')
+
+# ─── TABEL PERBANDINGAN DATA vs PREDIKSI ─────────────────
+residuals = y - y_pred
+print('\nNo  x    y_asli  y_prediksi  Residual  Residual²')
+print('-' * 58)
+for i in range(n):
+    print(f'{i+1:2d} {x[i]:4.0f} {y[i]:7.2f} {y_pred[i]:10.4f} {residuals[i]:8.4f} {residuals[i]**2:9.4f}')
+print(f'{"":46s} {SS_res:9.4f} ← SS_res')
+
+# ─── VISUALISASI ──────────────────────────────────────────
+fig, axes = plt.subplots(1, 3, figsize=(16, 5))
+
+# Panel 1: Data + garis regresi
+x_fit = np.linspace(x.min()-0.5, x.max()+0.5, 200)
+y_fit = a + b * x_fit
+axes[0].scatter(x, y, color='steelblue', s=70, zorder=5, label='Data observasi')
+axes[0].plot(x_fit, y_fit, 'r-', lw=2, label=f'Regresi Linear\ny={a:.3f}+{b:.3f}x')
+axes[0].axvline(x_bar, color='gray', ls=':', lw=1, label=f'x̄={x_bar:.1f}')
+axes[0].axhline(y_bar, color='gray', ls=':', lw=1, label=f'ȳ={y_bar:.1f}')
+
+# Gambar residual sebagai garis vertikal
+for xi, yi, yp in zip(x, y, y_pred):
+    axes[0].plot([xi,xi],[yi,yp],'k-',alpha=0.3,lw=1)
+
+axes[0].set_xlabel('Dosis Pupuk x (gram)')
+axes[0].set_ylabel('Tinggi Tanaman y (cm)')
+axes[0].set_title(f'Regresi Linear (R²={R2:.4f})')
+axes[0].legend(fontsize=9)
+
+# Panel 2: Plot residual vs x
+axes[1].scatter(x, residuals, color='darkorange', s=60, zorder=5)
+axes[1].axhline(0, color='black', lw=1.5)
+axes[1].fill_between(x, residuals, 0, alpha=0.2, color='orange')
+axes[1].set_xlabel('x'); axes[1].set_ylabel('Residual (y − ŷ)')
+axes[1].set_title('Plot Residual vs x')
+
+# Panel 3: Histogram residual
+axes[2].hist(residuals, bins=6, color='steelblue', edgecolor='white', alpha=0.8)
+axes[2].axvline(0, color='red', lw=2)
+axes[2].set_xlabel('Residual'); axes[2].set_ylabel('Frekuensi')
+axes[2].set_title('Distribusi Residual')
+
+plt.tight_layout()
+plt.savefig('regresi_linear.png', dpi=150, bbox_inches='tight')
+plt.show()
+print('Grafik disimpan: regresi_linear.png')</code></pre>
+    </div>
+
+    <div class="session-container">
+        <h2>Sesi 2: Regresi Polinomial & Overfitting <button class="copy-btn" onclick="copyCode('code2', this)">Copy Code</button></h2>
+        <pre><code id="code2"># ============================================================
+# SESI 2: Regresi Polinomial berbasis Normal Equations Matriks
+# ============================================================
+def regres_polinomial(x, y, m):
+    '''
+    Regresi polinomial orde m dari Normal Equations.
+    Parameter:
+    x, y : array data
+    m    : orde polinomial
+    Return:
+    a      : koefisien [a0, a1, ..., am]
+    R2     : koefisien determinasi
+    SS_res : jumlah kuadrat residual
+    '''
+    n = len(x)
+    # Bangun matriks desain (Vandermonde) X berukuran n×(m+1)
+    X = np.column_stack([x**k for k in range(m+1)])
+    
+    # Normal Equations: (XᵀX)·a = Xᵀy
+    XtX = X.T @ X
+    Xty = X.T @ y
+    
+    # Selesaikan sistem linear
+    a = np.linalg.solve(XtX, Xty)
+    
+    # Hitung R²
+    y_pred = X @ a
+    SS_res = np.sum((y - y_pred)**2)
+    SS_tot = np.sum((y - y.mean())**2)
+    R2     = 1 - SS_res / SS_tot
+    
+    return a, R2, SS_res
+
+# ─── BANDINGKAN BERBAGAI ORDE ─────────────────────────────
+print('=== PERBANDINGAN ORDE POLINOMIAL ===')
+print(f'{"Orde":&gt;5} {"R²":&gt;10} {"SS_res":&gt;12} {"Koefisien utama"}')
+print('-' * 70)
+
+orde_list = [1, 2, 3, 4, 5, 7, 10]
+hasil = {}
+
+for m in orde_list:
+    a_m, R2_m, SSr_m = regres_polinomial(x, y, m)
+    hasil[m] = (a_m, R2_m, SSr_m)
+    
+    a_str = ', '.join([f'{c:.3f}' for c in a_m[:4]])
+    if len(a_m) &gt; 4:
+        a_str += ', ...'
+    print(f'{m:&gt;5} {R2_m:&gt;10.6f} {SSr_m:&gt;12.4f} [{a_str}]')
+
+print('\nPerhatikan: R² terus naik tapi apakah model makin baik?')
+
+# ─── VISUALISASI: FITTING BERBAGAI ORDE ──────────────────
+fig, axes = plt.subplots(2, 3, figsize=(16, 10))
+axes = axes.flatten()
+
+orde_vis = [1, 2, 3, 4, 5, 10]
+x_fit = np.linspace(x.min()-0.3, x.max()+0.3, 400)
+
+for idx, m in enumerate(orde_vis):
+    ax = axes[idx]
+    a_m, R2_m, SSr_m = hasil[m]
+    
+    # Evaluasi polinomial
+    y_fit = np.polyval(a_m[::-1], x_fit) # polyval butuh koef descending
+    
+    ax.scatter(x, y, color='steelblue', s=50, zorder=5)
+    ax.plot(x_fit, y_fit, 'r-', lw=1.8)
+    
+    ax.set_xlim(-0.5, 10.5); ax.set_ylim(-5, 60)
+    ax.set_title(f'Orde {m} (R²={R2_m:.4f})', fontsize=11)
+    ax.set_xlabel('x'); ax.set_ylabel('y')
+    
+    # Tandai jika overfitting (osilasi besar di tepi)
+    y_edge = np.polyval(a_m[::-1], np.array([-0.3, 10.3]))
+    if np.any(np.abs(y_edge) &gt; 60):
+        ax.set_facecolor('#451a1e')
+        ax.set_title(f'Orde {m} (R²={R2_m:.4f})  ⚠️  OVERFIT', fontsize=10, color='#f38ba8')
+
+plt.suptitle('Regresi Polinomial: Berbagai Orde', fontsize=13, y=1.01, color='#cdd6f4')
+plt.tight_layout()
+plt.savefig('overfitting.png', dpi=150, bbox_inches='tight')
+plt.show()
+
+# ─── GRAFIK R² DAN SS_res VS ORDE ────────────────────────
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
+
+orde_arr = list(hasil.keys())
+R2_arr   = [hasil[m][1] for m in orde_arr]
+SSr_arr  = [hasil[m][2] for m in orde_arr]
+
+ax1.plot(orde_arr, R2_arr, 'b-o', lw=2, ms=7, color='#89b4fa')
+ax1.set_xlabel('Orde Polinomial'); ax1.set_ylabel('R²')
+ax1.set_title('R² vs Orde (selalu naik!)')
+ax1.axvline(2, color='#a6e3a1', ls='--', label='Orde optimal')
+ax1.legend()
+
+ax2.semilogy(orde_arr, SSr_arr, 'r-o', lw=2, ms=7, color='#f38ba8')
+ax2.set_xlabel('Orde Polinomial'); ax2.set_ylabel('SS_res (log)')
+ax2.set_title('SS_res vs Orde (selalu turun!)')
+ax2.axvline(2, color='#a6e3a1', ls='--', label='Orde optimal')
+ax2.legend()
+
+plt.tight_layout()
+plt.savefig('r2_vs_orde.png', dpi=150, bbox_inches='tight')
+plt.show()</code></pre>
+    </div>
+
+    <div class="session-container">
+        <h2>Sesi 3: Hukum Pendinginan Newton <button class="copy-btn" onclick="copyCode('code3', this)">Copy Code</button></h2>
+        <pre><code id="code3"># ============================================================
+# SESI 3: Hukum Pendinginan Newton — Linearisasi Eksponensial
+# Model: T(t) = T∞ + (T₀−T∞)·e^(-k·t)
+# Setelah transformasi: ln(T(t)−T∞) = ln(T₀−T∞) − k·t
+# Bentuk linear: Y = A + B·t, di mana Y = ln(T−T∞)
+#
+# Data simulasi: Bola besi panas didinginkan di udara
+# ============================================================
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.optimize import curve_fit
+
+# ─── DATA PENGAMATAN ──────────────────────────────────────
+# Waktu (menit) dan suhu (°C)
+t_data = np.array([0, 2, 4, 6, 8, 10, 12, 15, 20, 25, 30], dtype=float)
+T_data = np.array([90.0, 78.5, 68.8, 60.2, 53.4, 47.8, 43.1, 37.2, 29.6, 24.8, 22.1], dtype=float)
+T_inf = 21.0 # suhu lingkungan (°C)
+
+print('=== DATA PENDINGINAN NEWTON ===')
+print(f'Suhu lingkungan T∞ = {T_inf}°C')
+print(f't (menit): {t_data}')
+print(f'T (°C)   : {T_data}')
+
+# ─── LINEARISASI: Y = ln(T − T∞) ─────────────────────────
+dT = T_data - T_inf # kelebihan suhu di atas T∞
+Y  = np.log(dT)     # variabel transformasi
+
+print(f'\nT − T∞ : {np.round(dT, 2)}')
+print(f'ln(T−T∞): {np.round(Y, 4)}')
+
+# ─── REGRESI LINEAR pada (t, Y) ───────────────────────────
+n     = len(t_data)
+x_bar = np.mean(t_data)
+Y_bar = np.mean(Y)
+
+b_lin = np.sum((t_data - x_bar)*(Y - Y_bar)) / np.sum((t_data - x_bar)**2)
+a_lin = Y_bar - b_lin * x_bar
+
+# Kembali ke parameter fisika
+k_lin  = -b_lin                 # laju pendinginan [1/menit]
+T0_lin = np.exp(a_lin) + T_inf  # suhu awal terfitting
+
+Y_pred = a_lin + b_lin * t_data
+R2_lin = 1 - np.sum((Y - Y_pred)**2) / np.sum((Y - Y_bar)**2)
+
+print(f'\n=== HASIL LINEARISASI ===')
+print(f'Intersep A = ln(T₀−T∞) = {a_lin:.4f}')
+print(f'Kemiringan B = −k      = {b_lin:.4f}')
+print(f'k (laju pendinginan)   = {k_lin:.4f} /menit')
+print(f'T₀ terfitting          = {T0_lin:.2f}°C (data: {T_data[0]}°C)')
+print(f'R² (pada Y=ln(T−T∞))   = {R2_lin:.6f}')
+
+# ─── VERIFIKASI: curve_fit langsung di domain y asli ────
+def model_newton(t, T0, k):
+    return T_inf + (T0 - T_inf) * np.exp(-k * t)
+
+popt, pcov = curve_fit(model_newton, t_data, T_data, p0=[90.0, 0.1], maxfev=5000)
+T0_cf, k_cf = popt
+perr = np.sqrt(np.diag(pcov)) # standard error
+
+T_pred_cf = model_newton(t_data, *popt)
+SS_res_cf = np.sum((T_data - T_pred_cf)**2)
+SS_tot_cf = np.sum((T_data - T_data.mean())**2)
+R2_cf     = 1 - SS_res_cf / SS_tot_cf
+
+print(f'\n=== VERIFIKASI scipy.optimize.curve_fit ===')
+print(f'k  = {k_cf:.4f} ± {perr[1]:.4f} /menit')
+print(f'T₀ = {T0_cf:.2f} ± {perr[0]:.2f} °C')
+print(f'R² (pada T asli) = {R2_cf:.6f}')
+print(f'\nSelisih k: {abs(k_lin-k_cf):.4f} /menit')
+print('→ Linearisasi menghasilkan koefisien sedikit berbeda karena')
+print(' meminimalkan residual pada ln(T) bukan pada T!')
+
+# ─── VISUALISASI PENDINGINAN NEWTON ──────────────────────
+t_fit = np.linspace(0, 35, 300)
+fig, axes = plt.subplots(1, 3, figsize=(16, 5))
+
+# Panel 1: T vs t (domain asli)
+axes[0].scatter(t_data, T_data, s=70, color='steelblue', zorder=5, label='Data')
+T_pred_lin = T_inf + np.exp(a_lin + b_lin * t_fit)
+axes[0].plot(t_fit, T_pred_lin, 'r--', lw=2, label=f'Linearisasi (k={k_lin:.3f})')
+axes[0].plot(t_fit, model_newton(t_fit, *popt), 'g-', lw=2, label=f'curve_fit (k={k_cf:.3f})')
+axes[0].axhline(T_inf, color='gray', ls=':', lw=1, label=f'T∞={T_inf}°C')
+axes[0].set_xlabel('Waktu (menit)'); axes[0].set_ylabel('Suhu (°C)')
+axes[0].set_title('Hukum Pendinginan Newton'); axes[0].legend(fontsize=9)
+
+# Panel 2: ln(T−T∞) vs t (domain linear)
+axes[1].scatter(t_data, Y, s=70, color='darkorange', zorder=5, label='ln(T−T∞)')
+axes[1].plot(t_fit, a_lin + b_lin*t_fit, 'r-', lw=2, label=f'Regresi linear\nR²={R2_lin:.4f}')
+axes[1].set_xlabel('Waktu (menit)'); axes[1].set_ylabel('ln(T − T∞)')
+axes[1].set_title('Domain Terliniearisasi'); axes[1].legend(fontsize=9)
+
+# Panel 3: Residual perbandingan
+res_lin = T_data - (T_inf + np.exp(a_lin + b_lin * t_data))
+res_cf  = T_data - model_newton(t_data, *popt)
+
+axes[2].plot(t_data, res_lin, 'r-o', ms=5, lw=1.5, label='Linearisasi')
+axes[2].plot(t_data, res_cf, 'g-s', ms=5, lw=1.5, label='curve_fit')
+axes[2].axhline(0, color='black', lw=1)
+axes[2].set_xlabel('Waktu (menit)'); axes[2].set_ylabel('Residual (°C)')
+axes[2].set_title('Perbandingan Residual'); axes[2].legend()
+
+plt.tight_layout()
+plt.savefig('pendinginan_newton.png', dpi=150, bbox_inches='tight')
+plt.show()
+
+t_half = np.log(2) / k_cf
+print(f'\nWaktu paruh pendinginan: t½ = ln(2)/k = {t_half:.2f} menit')</code></pre>
+    </div>
+
+    <div class="session-container">
+        <h2>Sesi 4: Hukum Stefan-Boltzmann <button class="copy-btn" onclick="copyCode('code4', this)">Copy Code</button></h2>
+        <pre><code id="code4"># ============================================================
+# SESI 4: Hukum Stefan-Boltzmann — P = ε·σ·A·T⁴
+#
+# Hukum asli: P = C·T^n (hukum pangkat / power law)
+# Linearisasi log-log: log(P) = log(C) + n·log(T)
+#
+# Dari fisika: n harus = 4, C = ε·σ·A
+# Kita akan memverifikasi ini secara numerik dari data!
+# ============================================================
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.optimize import curve_fit
+
+# ─── DATA (simulasi benda hitam dengan noise realistis) ───
+# T dalam Kelvin, P dalam Watt (objek kecil ε=0.9, A=0.01 m²)
+np.random.seed(42)
+T_true = np.array([300, 400, 500, 600, 700, 800, 900, 1000, 1200, 1500, 2000], dtype=float)
+
+sigma = 5.67e-8 # konstanta Stefan-Boltzmann [W/(m²·K⁴)]
+eps   = 0.90    # emisivitas
+A_obj = 0.01    # luas permukaan [m²]
+noise = 0.03    # 3% noise relatif
+
+P_true = eps * sigma * A_obj * T_true**4
+P_data = P_true * (1 + noise * np.random.randn(len(T_true)))
+
+print('=== DATA RADIASI TERMAL ===')
+print(f'{"T (K)":&gt;8} {"P_true (W)":&gt;12} {"P_data (W)":&gt;12} {"Noise%":&gt;7}')
+for i in range(len(T_true)):
+    pct = (P_data[i]-P_true[i])/P_true[i]*100
+    print(f'{T_true[i]:&gt;8.0f} {P_true[i]:&gt;12.4e} {P_data[i]:&gt;12.4e} {pct:&gt;7.2f}%')
+
+# ─── REGRESI LOG-LOG ──────────────────────────────────────
+log_T = np.log10(T_true) # gunakan T_true sebagai sumbu x
+log_P = np.log10(P_data)
+
+n_d = len(T_true)
+xb  = np.mean(log_T)
+yb  = np.mean(log_P)
+
+n_exp = np.sum((log_T-xb)*(log_P-yb)) / np.sum((log_T-xb)**2)
+log_C = yb - n_exp * xb
+
+C_fit = 10**log_C
+log_P_pred = log_C + n_exp * log_T
+R2_loglog = 1 - np.sum((log_P-log_P_pred)**2)/np.sum((log_P-yb)**2)
+
+# Ekstrak emisivitas dari C_fit = ε·σ·A
+eps_fit = C_fit / (sigma * A_obj)
+
+print(f'\n=== HASIL REGRESI LOG-LOG ===')
+print(f'Eksponen n (harus ≈ 4): {n_exp:.4f}')
+print(f'log₁₀(C)               : {log_C:.4f}')
+print(f'C_fit                  : {C_fit:.4e} (true: {eps*sigma*A_obj:.4e})')
+print(f'ε_fit (dari C)         : {eps_fit:.4f} (true: {eps:.2f})')
+print(f'R² (pada log-log)      : {R2_loglog:.6f}')
+print(f'\nVerifikasi: eksponen = {n_exp:.2f} (fisika: 4.00)', f' selisih: {abs(n_exp-4)/4*100:.2f}%')
+
+# ─── VISUALISASI STEFAN-BOLTZMANN ─────────────────────────
+fig, axes = plt.subplots(1, 3, figsize=(16, 5))
+T_fit = np.linspace(250, 2200, 500)
+P_fit = C_fit * T_fit**n_exp
+
+# Panel 1: P vs T (domain asli — kurva)
+axes[0].scatter(T_true, P_data, s=70, color='steelblue', zorder=5, label='Data')
+axes[0].plot(T_fit, P_fit, 'r-', lw=2, label=f'P = C·T^{n_exp:.2f}')
+axes[0].plot(T_fit, eps*sigma*A_obj*T_fit**4, 'g--', lw=1.5, label='P = εσA·T⁴ (eksak)')
+axes[0].set_xlabel('Temperatur T (K)')
+axes[0].set_ylabel('Daya Radiasi P (W)')
+axes[0].set_title('Hukum Stefan-Boltzmann')
+axes[0].legend(fontsize=9)
+
+# Panel 2: log(P) vs log(T) — linear!
+axes[1].scatter(log_T, log_P, s=70, color='darkorange', zorder=5, label='log(data)')
+axes[1].plot(log_T, log_P_pred, 'r-', lw=2, label=f'Regresi log-log\nn={n_exp:.3f}, R²={R2_loglog:.4f}')
+axes[1].set_xlabel('log₁₀(T)'); axes[1].set_ylabel('log₁₀(P)')
+axes[1].set_title('Domain Log-Log (linear!)')
+axes[1].legend(fontsize=9)
+
+# Panel 3: Residual relatif
+P_pred_data = C_fit * T_true**n_exp
+res_rel = (P_data - P_pred_data) / P_pred_data * 100
+
+axes[2].bar(range(len(T_true)), res_rel, color=['steelblue' if r&gt;=0 else 'tomato' for r in res_rel], edgecolor='white')
+axes[2].axhline(0, color='black', lw=1.5)
+axes[2].set_xticks(range(len(T_true)))
+axes[2].set_xticklabels([str(int(t)) for t in T_true], rotation=45, ha='right')
+axes[2].set_xlabel('T (K)'); axes[2].set_ylabel('Residual Relatif (%)')
+axes[2].set_title('Residual Relatif terhadap Fitting')
+
+plt.tight_layout()
+plt.savefig('stefan_boltzmann.png', dpi=150, bbox_inches='tight')
+plt.show()</code></pre>
+    </div>
+
+    <script>
+        function copyCode(elementId, btnElement) {
+            // Get the text from the code element
+            const codeText = document.getElementById(elementId).innerText;
+            
+            // Copy to clipboard
+            navigator.clipboard.writeText(codeText).then(() => {
+                // Change button text and style temporarily
+                const originalText = btnElement.innerText;
+                btnElement.innerText = "Copied! ✔";
+                btnElement.classList.add("copied");
+                
+                setTimeout(() => {
+                    btnElement.innerText = originalText;
+                    btnElement.classList.remove("copied");
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+                alert('Gagal copy code bro, coba manual aja.');
+            });
+        }
+    </script>
+</body>
+</html>
