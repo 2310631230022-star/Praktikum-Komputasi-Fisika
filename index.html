@@ -127,111 +127,114 @@
         <div class="session-container">
             <h2>Sesi 1: Regresi Linear Manual <button class="copy-btn" onclick="copyCode('code-m2-1', this)">Copy Code</button></h2>
             <pre><code id="code-m2-1"># ============================================================
-# SESI 1: Regresi Linear Least Square — dari Nol
-# Data: Pertumbuhan Tanaman (Dosis Pupuk vs Tinggi)
-# ============================================================
+# SESI 1A: Implementasi Manual Tiga Metode Beda Hingga
 import numpy as np
 import matplotlib.pyplot as plt
 
-# ─── DATA PERCOBAAN (dari modul, tabel 6.1) ───────────────
-x = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], dtype=float)
-y = np.array([2.1, 4.5, 8.3, 11.2, 15.8, 20.1, 25.3, 30.5, 36.2, 42.1, 48.5], dtype=float)
-n = len(x)
+# Definisi fungsi dan turunan analitik
+def f(x):
+    return x**3 + 2*x**2 - 3*x + 1
+def df_eksak(x): return 3*x**2 + 4*x - 3
+def d2f_eksak(x): return 6*x + 4
 
-print('=== DATA PERTUMBUHAN TANAMAN ===')
-print(f'Jumlah data: n = {n}')
-print(f'x-range: [{x.min()}, {x.max()}]')
-print(f'y-range: [{y.min()}, {y.max()}]')
+# Tiga metode beda hingga
+def beda_maju(f, x, h):
+    return (f(x+h) - f(x)) / h
+def beda_mundur(f, x, h):
+    return (f(x) - f(x-h)) / h
+def beda_pusat(f, x, h):
+    return (f(x+h) - f(x-h)) / (2*h)
+def beda_kedua(f, x, h):
+    return (f(x+h) - 2*f(x) + f(x-h)) / h**2
 
-# ─── IMPLEMENTASI MANUAL (TANPA numpy.polyfit) ────────────
-# Hitung semua jumlah yang diperlukan
-sum_x  = np.sum(x)
-sum_y  = np.sum(y)
-sum_xy = np.sum(x * y)
-sum_x2 = np.sum(x**2)
-x_bar  = sum_x / n
-y_bar  = sum_y / n
+# Titik evaluasi dan nilai eksak
+x0 = 2.0
+f_eksak_1 = df_eksak(x0)
+f_eksak_2 = d2f_eksak(x0)
 
-print(f'\nStatistik dasar:')
-print(f'Σx = {sum_x:.4f}')
-print(f'Σy = {sum_y:.4f}')
-print(f'x̄ = {x_bar:.4f}')
-print(f'ȳ = {y_bar:.4f}')
-print(f'Σxy = {sum_xy:.4f}')
-print(f'Σx² = {sum_x2:.4f}')
+print(f'=== FUNGSI: f(x) = x^3 + 2x^2 - 3x + 1 di x={x0} ===')
+print(f"Nilai eksak f'(x0) = {f_eksak_1:.6f}")
+print(f"Nilai eksak f''(x0) = {f_eksak_2:.6f}")
+print()
 
-# Formula Normal Equations
-b = (n * sum_xy - sum_x * sum_y) / (n * sum_x2 - sum_x**2)
-a = y_bar - b * x_bar
+# Tabel perbandingan untuk berbagai h
+h_list = [1.0, 0.5, 0.1, 0.05, 0.01, 0.005, 0.001, 0.0005]
+print(f"{'h':>8} {'Maju':>12} {'Mundur':>12} {'Pusat':>12} {'f\'\'(x)':>12}")
+print('-'*65)
 
-print(f'\n=== HASIL REGRESI LINEAR ===')
-print(f'Kemiringan b = {b:.6f}')
-print(f'Intersep   a = {a:.6f}')
-print(f'Persamaan: y = {a:.4f} + {b:.4f}·x')
+for h in h_list:
+    fm = beda_maju(f, x0, h)
+    fmn = beda_mundur(f, x0, h)
+    fp = beda_pusat(f, x0, h)
+    fk = beda_kedua(f, x0, h)
+    print(f'{h:>8.4f} {fm:>12.6f} {fmn:>12.6f} {fp:>12.6f} {fk:>12.6f}')
 
-# Hitung R²
-y_pred = a + b * x
-SS_res = np.sum((y - y_pred)**2)
-SS_tot = np.sum((y - y_bar)**2)
-R2     = 1 - SS_res / SS_tot
-RMSE   = np.sqrt(SS_res / n)
+# SESI 1B: Analisis Galat Tabel Error
+print(f"\n{'h':>8} {'|E_maju|':>12} {'|E_mundur|':>12} {'|E_pusat|':>12} {'|E_Turunan 2|':>12}")
+print('-' * 50)
 
-print(f'\nMetrik kualitas:')
-print(f'SS_res = {SS_res:.4f}')
-print(f'SS_tot = {SS_tot:.4f}')
-print(f'R²     = {R2:.6f} ({R2*100:.3f}%)')
-print(f'RMSE   = {RMSE:.4f} cm')
+h_arr, e_maju, e_mundur, e_pusat, e_turunan2 = [], [], [], [], []
 
-# Verifikasi dengan numpy.polyfit
-coef_np = np.polyfit(x, y, 1)
-print(f'\nVerifikasi numpy.polyfit: b={coef_np[0]:.6f}, a={coef_np[1]:.6f}')
-print(f'Selisih: Δb={abs(b-coef_np[0]):.2e}, Δa={abs(a-coef_np[1]):.2e}')
+for h in h_list:
+    em = abs(beda_maju(f, x0, h) - f_eksak_1)
+    emn = abs(beda_mundur(f, x0, h) - f_eksak_1)
+    ep = abs(beda_pusat(f, x0, h) - f_eksak_1)
+    et2 = abs(beda_kedua(f, x0, h) - f_eksak_2)
+    h_arr.append(h); e_maju.append(em); e_mundur.append(emn); e_pusat.append(ep)
+    print(f'{h:>8.4f} {em:>12.2e} {emn:>12.2e} {ep:>12.2e} {et2:>12.2e}')
 
-# ─── TABEL PERBANDINGAN DATA vs PREDIKSI ─────────────────
-residuals = y - y_pred
-print('\nNo  x    y_asli  y_prediksi  Residual  Residual²')
-print('-' * 58)
-for i in range(n):
-    print(f'{i+1:2d} {x[i]:4.0f} {y[i]:7.2f} {y_pred[i]:10.4f} {residuals[i]:8.4f} {residuals[i]**2:9.4f}')
-print(f'{"":46s} {SS_res:9.4f} ← SS_res')
+# Verifikasi orde konvergensi: rasio galat ketika h dikecilkan 10x
+print()
+print('Rasio galat pusat ketika h -> h/10 (harusnya ~100 untuk O(h²)):')
+e_p = np.array(e_pusat)
+for i in range(1, len(h_list)):
+    if e_p[i] > 1e-14: # hindari galat pembulatan
+        rasio = e_p[i-1]/e_p[i]
+        print(f'h={h_list[i-1]:.4f} -> {h_list[i]:.4f}: rasio = {rasio:.2f}')
 
-# ─── VISUALISASI ──────────────────────────────────────────
-fig, axes = plt.subplots(1, 3, figsize=(16, 5))
+# SESI 1C: Grafik Log-Log Galat vs h
+h_fine = np.logspace(-15, 0, 200)
 
-# Panel 1: Data + garis regresi
-x_fit = np.linspace(x.min()-0.5, x.max()+0.5, 200)
-y_fit = a + b * x_fit
-axes[0].scatter(x, y, color='steelblue', s=70, zorder=5, label='Data observasi')
-axes[0].plot(x_fit, y_fit, 'r-', lw=2, label=f'Regresi Linear\ny={a:.3f}+{b:.3f}x')
-axes[0].axvline(x_bar, color='gray', ls=':', lw=1, label=f'x̄={x_bar:.1f}')
-axes[0].axhline(y_bar, color='gray', ls=':', lw=1, label=f'ȳ={y_bar:.1f}')
+em_fine = [abs(beda_maju(f, x0, h) - f_eksak_1) for h in h_fine]
+emn_fine = [abs(beda_mundur(f, x0, h) - f_eksak_1) for h in h_fine]
+ep_fine = [abs(beda_pusat(f, x0, h) - f_eksak_1) for h in h_fine]
 
-# Gambar residual sebagai garis vertikal
-for xi, yi, yp in zip(x, y, y_pred):
-    axes[0].plot([xi,xi],[yi,yp],'k-',alpha=0.3,lw=1)
+em_fine = [max(e, 1e-17) for e in em_fine]
+emn_fine = [max(e, 1e-17) for e in emn_fine]
+ep_fine = [max(e, 1e-17) for e in ep_fine]
 
-axes[0].set_xlabel('Dosis Pupuk x (gram)')
-axes[0].set_ylabel('Tinggi Tanaman y (cm)')
-axes[0].set_title(f'Regresi Linear (R²={R2:.4f})')
-axes[0].legend(fontsize=9)
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14,5))
 
-# Panel 2: Plot residual vs x
-axes[1].scatter(x, residuals, color='darkorange', s=60, zorder=5)
-axes[1].axhline(0, color='black', lw=1.5)
-axes[1].fill_between(x, residuals, 0, alpha=0.2, color='orange')
-axes[1].set_xlabel('x'); axes[1].set_ylabel('Residual (y − ŷ)')
-axes[1].set_title('Plot Residual vs x')
+ax1.loglog(h_fine, em_fine, 'r-', lw=1.5, label='Selisih Maju')
+ax1.loglog(h_fine, emn_fine, 'b-', lw=1.5, label='Selisih Mundur')
+ax1.loglog(h_fine, ep_fine, 'g-', lw=2.0, label='Selisih Pusat')
 
-# Panel 3: Histogram residual
-axes[2].hist(residuals, bins=6, color='steelblue', edgecolor='white', alpha=0.8)
-axes[2].axvline(0, color='red', lw=2)
-axes[2].set_xlabel('Residual'); axes[2].set_ylabel('Frekuensi')
-axes[2].set_title('Distribusi Residual')
+h_ref = np.logspace(-10, 0, 50)
+ax1.loglog(h_ref, 3*h_ref, 'r--', alpha=0.5, lw=1, label='O(h)')
+ax1.loglog(h_ref, 1*h_ref**2, 'g--', alpha=0.5, lw=1, label='O(h²)')
 
+ax1.axvspan(1e-15, 1e-8, alpha=0.07, color='red', label='Zona roundoff')
+ax1.axvspan(1e-8, 1e-4, alpha=0.07, color='green', label='Zona optimal pusat')
+ax1.set_xlabel('h (ukuran langkah)'); ax1.set_ylabel('|Galat|')
+ax1.set_title("Galat Turunan Numerik vs h (f'(2))")
+ax1.legend(fontsize=9); ax1.set_ylim(1e-17, 1e2)
+
+h_vis = [1.0, 0.5, 0.1, 0.05, 0.01, 0.005, 0.001, 0.0005]
+e_vis_m = [abs(beda_maju(f, x0, h) - f_eksak_1) for h in h_vis]
+e_vis_mn = [abs(beda_mundur(f, x0, h) - f_eksak_1) for h in h_vis]
+e_vis_p = [abs(beda_pusat(f, x0, h) - f_eksak_1) for h in h_vis]
+
+ax2.loglog(h_vis, e_vis_m, 'rs-', lw=2, ms=7, label='Selisih Maju')
+ax2.loglog(h_vis, e_vis_mn, 'b^-', lw=2, ms=7, label='Selisih Mundur')
+ax2.loglog(h_vis, e_vis_p, 'gD-', lw=2, ms=7, label='Selisih Pusat')
+ax2.loglog(h_vis, [0.5*h for h in h_vis], 'r--', alpha=0.5, label='O(h)')
+ax2.loglog(h_vis, [0.5*h**2 for h in h_vis], 'g--', alpha=0.5, label='O(h²)')
+ax2.set_xlabel('h'); ax2.set_ylabel('|Galat|')
+ax2.set_title('Konfirmasi Orde Konvergensi')
+ax2.legend(fontsize=9)
 plt.tight_layout()
-plt.savefig('regresi_linear.png', dpi=150, bbox_inches='tight')
-plt.show()
-print('Grafik disimpan: regresi_linear.png')</code></pre>
+plt.savefig('galat_turunan.png', dpi=150, bbox_inches='tight')
+plt.show()</code></pre>
         </div>
 
         <div class="session-container">
