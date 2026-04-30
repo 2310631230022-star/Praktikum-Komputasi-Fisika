@@ -19,6 +19,42 @@
             border-bottom: 2px solid #313244;
             padding-bottom: 10px;
         }
+        .nav-menu {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .nav-btn {
+            background-color: #313244;
+            color: #cdd6f4;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .nav-btn:hover {
+            background-color: #45475a;
+        }
+        .nav-btn.active {
+            background-color: #a6e3a1;
+            color: #11111b;
+        }
+        .modul-content {
+            display: none;
+        }
+        .modul-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
         .session-container {
             background-color: #181825;
             border-radius: 8px;
@@ -33,6 +69,12 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            font-size: 1.2rem;
+        }
+        .modul-title {
+            color: #f38ba8;
+            text-align: center;
+            margin-bottom: 25px;
         }
         .copy-btn {
             background-color: #89b4fa;
@@ -56,21 +98,35 @@
             border-radius: 6px;
             overflow-x: auto;
             border: 1px solid #313244;
+            margin-bottom: 0;
         }
         code {
             font-family: 'Courier New', Courier, monospace;
             font-size: 14px;
             color: #cdd6f4;
+            line-height: 1.4;
         }
     </style>
 </head>
 <body>
 
-    <h1>🚀 Kode Praktikum: Regresi Least Square</h1>
+    <h1>🚀 Kode Praktikum Fisika Komputasi</h1>
 
-    <div class="session-container">
-        <h2>Sesi 1: Regresi Linear Manual <button class="copy-btn" onclick="copyCode('code1', this)">Copy Code</button></h2>
-        <pre><code id="code1"># ============================================================
+    <!-- Menu Navigasi -->
+    <div class="nav-menu">
+        <button class="nav-btn active" onclick="showModul('modul2', this)">Modul 2: Regresi</button>
+        <button class="nav-btn" onclick="showModul('modul3', this)">Modul 3: Turunan Numerik</button>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODUL 2: REGRESI LEAST SQUARE              -->
+    <!-- ========================================== -->
+    <div id="modul2" class="modul-content active">
+        <h2 class="modul-title">Modul 2 - Regresi Least Square</h2>
+
+        <div class="session-container">
+            <h2>Sesi 1: Regresi Linear Manual <button class="copy-btn" onclick="copyCode('code-m2-1', this)">Copy Code</button></h2>
+            <pre><code id="code-m2-1"># ============================================================
 # SESI 1: Regresi Linear Least Square — dari Nol
 # Data: Pertumbuhan Tanaman (Dosis Pupuk vs Tinggi)
 # ============================================================
@@ -176,11 +232,11 @@ plt.tight_layout()
 plt.savefig('regresi_linear.png', dpi=150, bbox_inches='tight')
 plt.show()
 print('Grafik disimpan: regresi_linear.png')</code></pre>
-    </div>
+        </div>
 
-    <div class="session-container">
-        <h2>Sesi 2: Regresi Polinomial & Overfitting <button class="copy-btn" onclick="copyCode('code2', this)">Copy Code</button></h2>
-        <pre><code id="code2"># ============================================================
+        <div class="session-container">
+            <h2>Sesi 2: Regresi Polinomial & Overfitting <button class="copy-btn" onclick="copyCode('code-m2-2', this)">Copy Code</button></h2>
+            <pre><code id="code-m2-2"># ============================================================
 # SESI 2: Regresi Polinomial berbasis Normal Equations Matriks
 # ============================================================
 def regres_polinomial(x, y, m):
@@ -286,11 +342,11 @@ ax2.legend()
 plt.tight_layout()
 plt.savefig('r2_vs_orde.png', dpi=150, bbox_inches='tight')
 plt.show()</code></pre>
-    </div>
+        </div>
 
-    <div class="session-container">
-        <h2>Sesi 3: Hukum Pendinginan Newton <button class="copy-btn" onclick="copyCode('code3', this)">Copy Code</button></h2>
-        <pre><code id="code3"># ============================================================
+        <div class="session-container">
+            <h2>Sesi 3: Hukum Pendinginan Newton <button class="copy-btn" onclick="copyCode('code-m2-3', this)">Copy Code</button></h2>
+            <pre><code id="code-m2-3"># ============================================================
 # SESI 3: Hukum Pendinginan Newton — Linearisasi Eksponensial
 # Model: T(t) = T∞ + (T₀−T∞)·e^(-k·t)
 # Setelah transformasi: ln(T(t)−T∞) = ln(T₀−T∞) − k·t
@@ -398,11 +454,11 @@ plt.show()
 
 t_half = np.log(2) / k_cf
 print(f'\nWaktu paruh pendinginan: t½ = ln(2)/k = {t_half:.2f} menit')</code></pre>
-    </div>
+        </div>
 
-    <div class="session-container">
-        <h2>Sesi 4: Hukum Stefan-Boltzmann <button class="copy-btn" onclick="copyCode('code4', this)">Copy Code</button></h2>
-        <pre><code id="code4"># ============================================================
+        <div class="session-container">
+            <h2>Sesi 4: Hukum Stefan-Boltzmann <button class="copy-btn" onclick="copyCode('code-m2-4', this)">Copy Code</button></h2>
+            <pre><code id="code-m2-4"># ============================================================
 # SESI 4: Hukum Stefan-Boltzmann — P = ε·σ·A·T⁴
 #
 # Hukum asli: P = C·T^n (hukum pangkat / power law)
@@ -495,9 +551,387 @@ axes[2].set_title('Residual Relatif terhadap Fitting')
 plt.tight_layout()
 plt.savefig('stefan_boltzmann.png', dpi=150, bbox_inches='tight')
 plt.show()</code></pre>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODUL 3: NUMERICAL DIFFERENTIATION         -->
+    <!-- ========================================== -->
+    <div id="modul3" class="modul-content">
+        <h2 class="modul-title">Modul 3 - Numerical Differentiation</h2>
+
+        <div class="session-container">
+            <h2>Setup Awal Google Colab <button class="copy-btn" onclick="copyCode('code-m3-setup', this)">Copy Code</button></h2>
+            <pre><code id="code-m3-setup"># Cell 0: Verifikasi setup
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.misc import derivative
+
+%matplotlib inline
+plt.rcParams.update({'figure.dpi':120, 'font.size':11, 'axes.grid': True, 'grid.alpha':0.3})
+
+print(f'NumPy version: {np.__version__}')
+print('Setup OK - Praktikum Turunan Numerik siap dimulai!')</code></pre>
+        </div>
+
+        <div class="session-container">
+            <h2>Sesi 1: Tiga Metode Beda Hingga & Analisis Galat <button class="copy-btn" onclick="copyCode('code-m3-1', this)">Copy Code</button></h2>
+            <pre><code id="code-m3-1"># SESI 1A: Implementasi Manual Tiga Metode Beda Hingga
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Definisi fungsi dan turunan analitik
+def f(x):
+    return x**3 + 2*x**2 - 3*x + 1
+def df_eksak(x): return 3*x**2 + 4*x - 3
+def d2f_eksak(x): return 6*x + 4
+
+# Tiga metode beda hingga
+def beda_maju(f, x, h):
+    return (f(x+h) - f(x)) / h
+def beda_mundur(f, x, h):
+    return (f(x) - f(x-h)) / h
+def beda_pusat(f, x, h):
+    return (f(x+h) - f(x-h)) / (2*h)
+def beda_kedua(f, x, h):
+    return (f(x+h) - 2*f(x) + f(x-h)) / h**2
+
+# Titik evaluasi dan nilai eksak
+x0 = 2.0
+f_eksak_1 = df_eksak(x0)
+f_eksak_2 = d2f_eksak(x0)
+
+print(f'=== FUNGSI: f(x) = x^3 + 2x^2 - 3x + 1 di x={x0} ===')
+print(f"Nilai eksak f'(x0) = {f_eksak_1:.6f}")
+print(f"Nilai eksak f''(x0) = {f_eksak_2:.6f}")
+print()
+
+# Tabel perbandingan untuk berbagai h
+h_list = [1.0, 0.5, 0.1, 0.05, 0.01, 0.005, 0.001, 0.0005]
+print(f"{'h':&gt;8} {'Maju':&gt;12} {'Mundur':&gt;12} {'Pusat':&gt;12} {'f\'\'(x)':&gt;12}")
+print('-'*65)
+
+for h in h_list:
+    fm = beda_maju(f, x0, h)
+    fmn = beda_mundur(f, x0, h)
+    fp = beda_pusat(f, x0, h)
+    fk = beda_kedua(f, x0, h)
+    print(f'{h:&gt;8.4f} {fm:&gt;12.6f} {fmn:&gt;12.6f} {fp:&gt;12.6f} {fk:&gt;12.6f}')
+
+# SESI 1B: Analisis Galat Tabel Error
+print(f"\n{'h':&gt;8} {'|E_maju|':&gt;12} {'|E_mundur|':&gt;12} {'|E_pusat|':&gt;12}")
+print('-' * 50)
+
+h_arr, e_maju, e_mundur, e_pusat = [], [], [], []
+
+for h in h_list:
+    em = abs(beda_maju(f, x0, h) - f_eksak_1)
+    emn = abs(beda_mundur(f, x0, h) - f_eksak_1)
+    ep = abs(beda_pusat(f, x0, h) - f_eksak_1)
+    h_arr.append(h); e_maju.append(em); e_mundur.append(emn); e_pusat.append(ep)
+    print(f'{h:&gt;8.4f} {em:&gt;12.2e} {emn:&gt;12.2e} {ep:&gt;12.2e}')
+
+# Verifikasi orde konvergensi: rasio galat ketika h dikecilkan 10x
+print()
+print('Rasio galat pusat ketika h -&gt; h/10 (harusnya ~100 untuk O(h²)):')
+e_p = np.array(e_pusat)
+for i in range(1, len(h_list)):
+    if e_p[i] &gt; 1e-14: # hindari galat pembulatan
+        rasio = e_p[i-1]/e_p[i]
+        print(f'h={h_list[i-1]:.4f} -&gt; {h_list[i]:.4f}: rasio = {rasio:.2f}')
+
+# SESI 1C: Grafik Log-Log Galat vs h
+h_fine = np.logspace(-15, 0, 200)
+
+em_fine = [abs(beda_maju(f, x0, h) - f_eksak_1) for h in h_fine]
+emn_fine = [abs(beda_mundur(f, x0, h) - f_eksak_1) for h in h_fine]
+ep_fine = [abs(beda_pusat(f, x0, h) - f_eksak_1) for h in h_fine]
+
+em_fine = [max(e, 1e-17) for e in em_fine]
+emn_fine = [max(e, 1e-17) for e in emn_fine]
+ep_fine = [max(e, 1e-17) for e in ep_fine]
+
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14,5))
+
+ax1.loglog(h_fine, em_fine, 'r-', lw=1.5, label='Selisih Maju')
+ax1.loglog(h_fine, emn_fine, 'b-', lw=1.5, label='Selisih Mundur')
+ax1.loglog(h_fine, ep_fine, 'g-', lw=2.0, label='Selisih Pusat')
+
+h_ref = np.logspace(-10, 0, 50)
+ax1.loglog(h_ref, 3*h_ref, 'r--', alpha=0.5, lw=1, label='O(h)')
+ax1.loglog(h_ref, 1*h_ref**2, 'g--', alpha=0.5, lw=1, label='O(h²)')
+
+ax1.axvspan(1e-15, 1e-8, alpha=0.07, color='red', label='Zona roundoff')
+ax1.axvspan(1e-8, 1e-4, alpha=0.07, color='green', label='Zona optimal pusat')
+ax1.set_xlabel('h (ukuran langkah)'); ax1.set_ylabel('|Galat|')
+ax1.set_title("Galat Turunan Numerik vs h (f'(2))")
+ax1.legend(fontsize=9); ax1.set_ylim(1e-17, 1e2)
+
+h_vis = [1.0, 0.5, 0.1, 0.05, 0.01, 0.005, 0.001, 0.0005]
+e_vis_m = [abs(beda_maju(f, x0, h) - f_eksak_1) for h in h_vis]
+e_vis_mn = [abs(beda_mundur(f, x0, h) - f_eksak_1) for h in h_vis]
+e_vis_p = [abs(beda_pusat(f, x0, h) - f_eksak_1) for h in h_vis]
+
+ax2.loglog(h_vis, e_vis_m, 'rs-', lw=2, ms=7, label='Selisih Maju')
+ax2.loglog(h_vis, e_vis_mn, 'b^-', lw=2, ms=7, label='Selisih Mundur')
+ax2.loglog(h_vis, e_vis_p, 'gD-', lw=2, ms=7, label='Selisih Pusat')
+ax2.loglog(h_vis, [0.5*h for h in h_vis], 'r--', alpha=0.5, label='O(h)')
+ax2.loglog(h_vis, [0.5*h**2 for h in h_vis], 'g--', alpha=0.5, label='O(h²)')
+ax2.set_xlabel('h'); ax2.set_ylabel('|Galat|')
+ax2.set_title('Konfirmasi Orde Konvergensi')
+ax2.legend(fontsize=9)
+plt.tight_layout()
+plt.savefig('galat_turunan.png', dpi=150, bbox_inches='tight')
+plt.show()</code></pre>
+        </div>
+
+        <div class="session-container">
+            <h2>Sesi 2: Formula Orde Tinggi & Richardson Extrapolation <button class="copy-btn" onclick="copyCode('code-m3-2', this)">Copy Code</button></h2>
+            <pre><code id="code-m3-2"># SESI 2: Formula 5-Titik dan Richardson Extrapolation
+
+def beda_5titik(f, x, h):
+    # Formula 5-titik untuk turunan pertama - galat O(h^4)
+    return (-f(x+2*h) + 8*f(x+h) - 8*f(x-h) + f(x-2*h)) / (12*h)
+
+def richardson(f, x, h):
+    # Richardson Extrapolation: O(h^2) -&gt; O(h^4)
+    D_h = beda_pusat(f, x, h)
+    D_h2 = beda_pusat(f, x, h/2)
+    return (4*D_h2 - D_h) / 3
+
+# Perbandingan semua metode
+print('=== PERBANDINGAN SEMUA METODE (f di x=2) ===')
+print(f"{'h':&gt;8} {'Pusat O(h²)':&gt;14} {'5-titik O(h⁴)':&gt;14} {'Richardson O(h⁴)':&gt;18}")
+print('-' * 60)
+
+h_test = [0.5, 0.1, 0.05, 0.01, 0.001]
+for h in h_test:
+    ep = abs(beda_pusat(f, x0, h) - f_eksak_1)
+    e5 = abs(beda_5titik(f, x0, h) - f_eksak_1)
+    er = abs(richardson(f, x0, h) - f_eksak_1)
+    print(f'{h:&gt;8.3f} {ep:&gt;14.2e} {e5:&gt;14.2e} {er:&gt;18.2e}')
+
+# Grafik konvergensi semua metode
+harr2 = np.logspace(-6, 0, 100)
+e_pusat2 = [max(abs(beda_pusat(f, x0, h) - f_eksak_1), 1e-17) for h in harr2]
+e_5pt = [max(abs(beda_5titik(f, x0, h) - f_eksak_1), 1e-17) for h in harr2]
+e_rich = [max(abs(richardson(f, x0, h) - f_eksak_1), 1e-17) for h in harr2]
+
+fig, ax = plt.subplots(figsize=(9, 6))
+ax.loglog(harr2, e_pusat2, 'g-', lw=1.8, label='Selisih Pusat O(h²)')
+ax.loglog(harr2, e_5pt, 'b-', lw=1.8, label='Formula 5-titik O(h⁴)')
+ax.loglog(harr2, e_rich, 'm-', lw=1.8, label='Richardson O(h⁴)')
+
+h_r = np.logspace(-4, 0, 30)
+ax.loglog(h_r, 0.5*h_r**2, 'g--', alpha=0.5, lw=1, label='O(h²)')
+ax.loglog(h_r, 0.02*h_r**4, 'b--', alpha=0.5, lw=1, label='O(h⁴)')
+
+ax.set_xlabel('h'); ax.set_ylabel('|Galat|')
+ax.set_title('Konvergensi: Orde 2 vs Orde 4')
+ax.legend(fontsize=10); ax.set_ylim(1e-16, 10)
+
+plt.tight_layout()
+plt.savefig('orde_tinggi.png', dpi=150, bbox_inches='tight')
+plt.show()
+
+print('\nObservasi: untuk h = 0.1, berapa faktor perbaikan 5-titik vs pusat?')
+ep_01 = abs(beda_pusat(f, x0, 0.1) - f_eksak_1)
+e5_01 = abs(beda_5titik(f, x0, 0.1) - f_eksak_1)
+print(f'Pusat: {ep_01:.2e}, 5-titik: {e5_01:.2e}, rasio: {ep_01/e5_01:.0f}x')</code></pre>
+        </div>
+
+        <div class="session-container">
+            <h2>Sesi 3: Turunan Numerik Data Diskret - Kinematika <button class="copy-btn" onclick="copyCode('code-m3-3', this)">Copy Code</button></h2>
+            <pre><code id="code-m3-3"># SESI 3: Turunan Numerik pada Data Diskret (Tanpa Fungsi Analitik)
+import numpy as np
+import matplotlib.pyplot as plt
+
+# DATA PENGUKURAN (simulasi + noise realistis)
+g = 9.81 # m/s²
+v_terminal = 30.0 # m/s
+t_data = np.arange(0, 5.1, 0.2) # setiap 0.2 detik
+
+s_true = (v_terminal**2/g) * np.log(np.cosh(g*t_data/v_terminal))
+np.random.seed(77)
+noise = np.random.normal(0, 0.05, len(t_data)) # noise ~5 cm
+s_data = s_true + noise
+
+print('=== DATA POSISI GERAK JATUH BEBAS ===')
+print(f'Kecepatan terminal v_T = {v_terminal} m/s')
+print(f'Jumlah titik data: {len(t_data)}')
+print(f'Interval waktu: dt = {t_data[1]-t_data[0]:.1f} s\n')
+
+print(f"{'t (s)':&gt;6} {'s_data (m)':&gt;12} {'s_true (m)':&gt;12}")
+for i in range(0, len(t_data), 3):
+    print(f'{t_data[i]:&gt;6.1f} {s_data[i]:&gt;12.4f} {s_true[i]:&gt;12.4f}')
+
+# HITUNG KECEPATAN: v = ds/dt
+# Metode 1: numpy.gradient
+v_numpy = np.gradient(s_data, t_data)
+
+# Metode 2: manual
+dt = t_data[1] - t_data[0]
+v_manual = np.zeros_like(s_data)
+v_manual[0] = (-3*s_data[0] + 4*s_data[1] - s_data[2]) / (2*dt) # kiri
+v_manual[-1] = (s_data[-3] - 4*s_data[-2] + 3*s_data[-1]) / (2*dt) # kanan
+v_manual[1:-1] = (s_data[2:] - s_data[:-2]) / (2*dt) # interior
+
+v_eksak = v_terminal * np.tanh(g*t_data / v_terminal)
+
+# HITUNG PERCEPATAN: a = dv/dt = d²s/dt²
+a_numpy = np.gradient(v_numpy, t_data)
+a_eksak = g / np.cosh(g*t_data/v_terminal)**2
+
+print(f"\n{'t':&gt;5} {'v_numpy':&gt;10} {'v_manual':&gt;10} {'v_eksak':&gt;10} {'a_numpy':&gt;10} {'a_eksak':&gt;10}")
+print('-'*65)
+for i in range(len(t_data)):
+    print(f'{t_data[i]:&gt;5.1f} {v_numpy[i]:&gt;10.4f} {v_manual[i]:&gt;10.4f} {v_eksak[i]:&gt;10.4f} {a_numpy[i]:&gt;10.4f} {a_eksak[i]:&gt;10.4f}')
+
+# VISUALISASI KINEMATIKA
+fig, axes = plt.subplots(1, 3, figsize=(16, 5))
+t_fit = np.linspace(0, 5, 300)
+s_fit = (v_terminal**2/g)*np.log(np.cosh(g*t_fit/v_terminal))
+v_fit = v_terminal*np.tanh(g*t_fit/v_terminal)
+a_fit = g/np.cosh(g*t_fit/v_terminal)**2
+
+# Panel 1: Posisi
+axes[0].scatter(t_data, s_data, s=40, color='steelblue', zorder=5, label='Data (noise)')
+axes[0].plot(t_fit, s_fit, 'k-', lw=1.5, label='s(t) eksak')
+axes[0].set_xlabel('t (s)'); axes[0].set_ylabel('s (m)')
+axes[0].set_title('Posisi s(t)'); axes[0].legend()
+
+# Panel 2: Kecepatan
+axes[1].plot(t_data, v_numpy, 'ro-', ms=5, lw=1.5, label='numpy.gradient')
+axes[1].plot(t_data, v_manual, 'b^-', ms=4, lw=1.2, label='Manual beda pusat')
+axes[1].plot(t_fit, v_fit, 'k-', lw=2, label='v(t) eksak')
+axes[1].axhline(v_terminal, color='gray', ls=':', lw=1.2, label=f'v_terminal={v_terminal} m/s')
+axes[1].set_xlabel('t (s)'); axes[1].set_ylabel('v (m/s)')
+axes[1].set_title('Kecepatan v=ds/dt'); axes[1].legend(fontsize=9)
+
+# Panel 3: Percepatan
+axes[2].plot(t_data, a_numpy, 'mD-', ms=5, lw=1.5, label='a=d(v_numpy)/dt')
+axes[2].plot(t_fit, a_fit, 'k-', lw=2, label='a(t) eksak')
+axes[2].axhline(g, color='blue', ls=':', lw=1.2, label=f'g={g} m/s²')
+axes[2].axhline(0, color='gray', ls='--', lw=1)
+axes[2].set_xlabel('t (s)'); axes[2].set_ylabel('a (m/s²)')
+axes[2].set_title('Percepatan a=d²s/dt²'); axes[2].legend(fontsize=9)
+
+plt.suptitle('Kinematika Gerak Jatuh Bebas dengan Hambatan Udara', fontsize=13)
+plt.tight_layout()
+plt.savefig('kinematika.png', dpi=150, bbox_inches='tight')
+plt.show()
+
+# Galat RMS
+rms_v = np.sqrt(np.mean((v_numpy - v_eksak)**2))
+rms_a = np.sqrt(np.mean((a_numpy - a_eksak)**2))
+print(f'\nGalat RMS kecepatan: {rms_v:.4f} m/s')
+print(f'Galat RMS percepatan: {rms_a:.4f} m/s²')
+print('(Galat sebagian besar dari noise, bukan dari metode numerik)')</code></pre>
+        </div>
+
+        <div class="session-container">
+            <h2>Sesi 4: Dispersi Optik & Kapasitas Panas <button class="copy-btn" onclick="copyCode('code-m3-4', this)">Copy Code</button></h2>
+            <pre><code id="code-m3-4"># SESI 4A: Dispersi Optik Indeks Bias vs Panjang Gelombang
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Koefisien Sellmeier untuk kaca BK7 (crown glass)
+B1, B2, B3 = 1.03961212, 0.23179234, 1.01046945
+C1, C2, C3 = 6.00069867e-3, 2.00179144e-2, 1.03560653e2 # dalam µm²
+
+def n_sellmeier(lam_um):
+    """Indeks bias kaca BK7, λ dalam mikrometer"""
+    lam2 = lam_um**2
+    return np.sqrt(1 + B1*lam2/(lam2-C1) + B2*lam2/(lam2-C2) + B3*lam2/(lam2-C3))
+
+# Array panjang gelombang
+lamarr = np.linspace(0.40, 1.00, 200)
+hopt = 1e-5
+narr = n_sellmeier(lamarr)
+
+dn_dlam = np.array([beda_pusat(n_sellmeier, l, hopt) for l in lamarr])
+d2n_dlam = np.array([beda_kedua(n_sellmeier, l, hopt) for l in lamarr])
+
+# Koefisien dispersi grup (Group Velocity Dispersion)
+c_light = 3e8 # m/s
+GVD = (lamarr * 1e-6 / c_light) * d2n_dlam * 1e24 # ps²/km
+
+# Panjang gelombang Zero Dispersion (GVD=0)
+sign_change = np.where(np.diff(np.sign(GVD)))[0]
+lam_ZD = lamarr[sign_change[0]] if len(sign_change) &gt; 0 else None
+
+print('=== DISPERSI OPTIK KACA BK7 ===')
+print(f"{'λ (µm)':&gt;8} {'n(λ)':&gt;10} {'dn/dλ':&gt;12} {'d²n/dλ²':&gt;12} {'GVD':&gt;10}")
+print('-'*60)
+for i in range(0, len(lamarr), 20):
+    print(f"{lamarr[i]:&gt;8.3f} {narr[i]:&gt;10.6f} {dn_dlam[i]:&gt;12.4e} {d2n_dlam[i]:&gt;12.4e} {GVD[i]:&gt;10.2f}")
+if lam_ZD: print(f'\nPanjang gelombang Zero Dispersion: λ_ZD = {lam_ZD:.3f} µm')
+
+# Visualisasi Dispersi Optik
+fig, axes = plt.subplots(1, 3, figsize=(16, 5))
+
+axes[0].plot(lamarr, narr, 'b-', lw=2)
+axes[0].set_xlabel('λ (µm)'); axes[0].set_ylabel('n(λ)')
+axes[0].set_title('Indeks Bias Kaca BK7')
+
+for name, lam_nm, col in [('F (486nm)', 0.486, 'blue'), ('D (589nm)', 0.589, 'yellow'), ('C (656nm)', 0.656, 'red')]:
+    axes[0].axvline(lam_nm, color=col, ls='--', lw=1.2, label=name)
+axes[0].legend(fontsize=9)
+
+axes[1].plot(lamarr, -dn_dlam*1e3, '-', lw=2)
+axes[1].axhline(0, color='black', lw=0.8)
+axes[1].set_xlabel('λ (µm)'); axes[1].set_ylabel('-dn/dλ (x10³/µm)')
+axes[1].set_title('Dispersi Pertama -dn/dλ')
+
+axes[2].plot(lamarr, GVD, 'g-', lw=2)
+axes[2].axhline(0, color='black', lw=1.5, ls='--')
+if lam_ZD:
+    axes[2].axvline(lam_ZD, color='red', ls=':', lw=1.5, label=f'ZD: {lam_ZD:.3f} µm')
+axes[2].set_xlabel('λ (µm)'); axes[2].set_ylabel('GVD (ps²/km)')
+axes[2].set_title('Group Velocity Dispersion'); axes[2].legend()
+
+plt.suptitle('Dispersi Optik Kaca BK7 - Turunan Numerik Persamaan Sellmeier', fontsize=12)
+plt.tight_layout()
+plt.savefig('dispersioptik.png', dpi=150, bbox_inches='tight')
+plt.show()
+
+# SESI 4B: Kapasitas Panas dari Data Entalpi
+print('\n=== KAPASITAS PANAS NITROGEN (N2) ===')
+print('Cp = dH/dT - turunan numerik entalpi terhadap suhu')
+
+Tarr = np.array([298, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500], dtype=float)
+Harr = np.array([0.000, 0.054, 2.971, 5.911, 8.894, 11.937, 15.046, 18.223, 21.463, 24.760, 28.109, 31.503, 34.936, 38.405]) # kJ/mol
+
+Cp_grad = np.gradient(Harr, Tarr) * 1000 # J/(mol K)
+
+print(f"\n{'T (K)':&gt;6} {'H (kJ/mol)':&gt;12} {'Cp (J/mol·K)':&gt;14}")
+print('-'*38)
+for i in range(len(Tarr)):
+    print(f"{Tarr[i]:&gt;6.0f} {Harr[i]:&gt;12.3f} {Cp_grad[i]:&gt;14.2f}")
+
+print(f'\nCp (298K) = {Cp_grad[0]:.2f} J/(mol K) (referensi: 29.12 J/mol K)')</code></pre>
+        </div>
     </div>
 
     <script>
+        function showModul(modulId, btnElement) {
+            // Sembunyikan semua modul
+            const moduls = document.querySelectorAll('.modul-content');
+            moduls.forEach(modul => {
+                modul.classList.remove('active');
+            });
+
+            // Hapus class active dari semua tombol nav
+            const navBtns = document.querySelectorAll('.nav-btn');
+            navBtns.forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Tampilkan modul yang dipilih dan highlight tombolnya
+            document.getElementById(modulId).classList.add('active');
+            btnElement.classList.add('active');
+        }
+
         function copyCode(elementId, btnElement) {
             // Get the text from the code element
             const codeText = document.getElementById(elementId).innerText;
