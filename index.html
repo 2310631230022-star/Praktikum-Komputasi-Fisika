@@ -116,6 +116,7 @@
         <button class="nav-btn active" onclick="showModul('modul2', this)">Modul 2: Regresi</button>
         <button class="nav-btn" onclick="showModul('modul3', this)">Modul 3: Turunan Numerik</button>
         <button class="nav-btn" onclick="showModul('modul4', this)">Modul 4: Integrasi Numerik</button>
+        <button class="nav-btn" onclick="showModul('modul5', this)">Modul 5: Eliminasi Gauss</button>
     </div>
 
     <div id="modul2" class="modul-content active">
@@ -156,7 +157,7 @@ print()
 
 # Tabel perbandingan untuk berbagai h
 h_list = [1.0, 0.5, 0.1, 0.05, 0.01, 0.005, 0.001, 0.0005]
-print(f"{'h':&gt;8} {'Maju':&gt;12} {'Mundur':&gt;12} {'Pusat':&gt;12} {'f\'\'(x)':&gt;12}")
+print(f"{'h':>8} {'Maju':>12} {'Mundur':>12} {'Pusat':>12} {'f\'\'(x)':>12}")
 print('-'*65)
 
 for h in h_list:
@@ -164,10 +165,10 @@ for h in h_list:
     fmn = beda_mundur(f, x0, h)
     fp = beda_pusat(f, x0, h)
     fk = beda_kedua(f, x0, h)
-    print(f'{h:&gt;8.4f} {fm:&gt;12.6f} {fmn:&gt;12.6f} {fp:&gt;12.6f} {fk:&gt;12.6f}')
+    print(f'{h:>8.4f} {fm:>12.6f} {fmn:>12.6f} {fp:>12.6f} {fk:>12.6f}')
 
 # SESI 1B: Analisis Galat Tabel Error
-print(f"\n{'h':&gt;8} {'|E_maju|':&gt;12} {'|E_mundur|':&gt;12} {'|E_pusat|':&gt;12} {'|E_Turunan 2|':&gt;12}")
+print(f"\n{'h':>8} {'|E_maju|':>12} {'|E_mundur|':>12} {'|E_pusat|':>12} {'|E_Turunan 2|':>12}")
 print('-' * 50)
 
 h_arr, e_maju, e_mundur, e_pusat, e_turunan2 = [], [], [], [], []
@@ -178,16 +179,16 @@ for h in h_list:
     ep = abs(beda_pusat(f, x0, h) - f_eksak_1)
     et2 = abs(beda_kedua(f, x0, h) - f_eksak_2)
     h_arr.append(h); e_maju.append(em); e_mundur.append(emn); e_pusat.append(ep)
-    print(f'{h:&gt;8.4f} {em:&gt;12.2e} {emn:&gt;12.2e} {ep:&gt;12.2e} {et2:&gt;12.2e}')
+    print(f'{h:>8.4f} {em:>12.2e} {emn:>12.2e} {ep:>12.2e} {et2:>12.2e}')
 
 # Verifikasi orde konvergensi: rasio galat ketika h dikecilkan 10x
 print()
-print('Rasio galat pusat ketika h -&gt; h/10 (harusnya ~100 untuk O(h²)):')
+print('Rasio galat pusat ketika h -> h/10 (harusnya ~100 untuk O(h²)):')
 e_p = np.array(e_pusat)
 for i in range(1, len(h_list)):
-    if e_p[i] &gt; 1e-14: # hindari galat pembulatan
+    if e_p[i] > 1e-14: # hindari galat pembulatan
         rasio = e_p[i-1]/e_p[i]
-        print(f'h={h_list[i-1]:.4f} -&gt; {h_list[i]:.4f}: rasio = {rasio:.2f}')
+        print(f'h={h_list[i-1]:.4f} -> {h_list[i]:.4f}: rasio = {rasio:.2f}')
 
 # SESI 1C: Grafik Log-Log Galat vs h
 h_fine = np.logspace(-15, 0, 200)
@@ -271,7 +272,7 @@ def regres_polinomial(x, y, m):
 
 # ─── BANDINGKAN BERBAGAI ORDE ─────────────────────────────
 print('=== PERBANDINGAN ORDE POLINOMIAL ===')
-print(f'{"Orde":&gt;5} {"R²":&gt;10} {"SS_res":&gt;12} {"Koefisien utama"}')
+print(f'{"Orde":>5} {"R²":>10} {"SS_res":>12} {"Koefisien utama"}')
 print('-' * 70)
 
 orde_list = [1, 2, 3, 4, 5, 7, 10]
@@ -282,9 +283,9 @@ for m in orde_list:
     hasil[m] = (a_m, R2_m, SSr_m)
     
     a_str = ', '.join([f'{c:.3f}' for c in a_m[:4]])
-    if len(a_m) &gt; 4:
+    if len(a_m) > 4:
         a_str += ', ...'
-    print(f'{m:&gt;5} {R2_m:&gt;10.6f} {SSr_m:&gt;12.4f} [{a_str}]')
+    print(f'{m:>5} {R2_m:>10.6f} {SSr_m:>12.4f} [{a_str}]')
 
 print('\nPerhatikan: R² terus naik tapi apakah model makin baik?')
 
@@ -311,9 +312,9 @@ for idx, m in enumerate(orde_vis):
     
     # Tandai jika overfitting (osilasi besar di tepi)
     y_edge = np.polyval(a_m[::-1], np.array([-0.3, 10.3]))
-    if np.any(np.abs(y_edge) &gt; 60):
+    if np.any(np.abs(y_edge) > 60):
         ax.set_facecolor('#451a1e')
-        ax.set_title(f'Orde {m} (R²={R2_m:.4f})  ⚠️  OVERFIT', fontsize=10, color='#f38ba8')
+        ax.set_title(f'Orde {m} (R²={R2_m:.4f})  ⚠️ OVERFIT', fontsize=10, color='#f38ba8')
 
 plt.suptitle('Regresi Polinomial: Berbagai Orde', fontsize=13, y=1.01, color='#cdd6f4')
 plt.tight_layout()
@@ -485,10 +486,10 @@ P_true = eps * sigma * A_obj * T_true**4
 P_data = P_true * (1 + noise * np.random.randn(len(T_true)))
 
 print('=== DATA RADIASI TERMAL ===')
-print(f'{"T (K)":&gt;8} {"P_true (W)":&gt;12} {"P_data (W)":&gt;12} {"Noise%":&gt;7}')
+print(f'{"T (K)":>8} {"P_true (W)":>12} {"P_data (W)":>12} {"Noise%":>7}')
 for i in range(len(T_true)):
     pct = (P_data[i]-P_true[i])/P_true[i]*100
-    print(f'{T_true[i]:&gt;8.0f} {P_true[i]:&gt;12.4e} {P_data[i]:&gt;12.4e} {pct:&gt;7.2f}%')
+    print(f'{T_true[i]:>8.0f} {P_true[i]:>12.4e} {P_data[i]:>12.4e} {pct:>7.2f}%')
 
 # ─── REGRESI LOG-LOG ──────────────────────────────────────
 log_T = np.log10(T_true) # gunakan T_true sebagai sumbu x
@@ -541,7 +542,7 @@ axes[1].legend(fontsize=9)
 P_pred_data = C_fit * T_true**n_exp
 res_rel = (P_data - P_pred_data) / P_pred_data * 100
 
-axes[2].bar(range(len(T_true)), res_rel, color=['steelblue' if r&gt;=0 else 'tomato' for r in res_rel], edgecolor='white')
+axes[2].bar(range(len(T_true)), res_rel, color=['steelblue' if r>=0 else 'tomato' for r in res_rel], edgecolor='white')
 axes[2].axhline(0, color='black', lw=1.5)
 axes[2].set_xticks(range(len(T_true)))
 axes[2].set_xticklabels([str(int(t)) for t in T_true], rotation=45, ha='right')
@@ -605,7 +606,7 @@ print()
 
 # Tabel perbandingan untuk berbagai h
 h_list = [1.0, 0.5, 0.1, 0.05, 0.01, 0.005, 0.001, 0.0005]
-print(f"{'h':&gt;8} {'Maju':&gt;12} {'Mundur':&gt;12} {'Pusat':&gt;12} {'f\'\'(x)':&gt;12}")
+print(f"{'h':>8} {'Maju':>12} {'Mundur':>12} {'Pusat':>12} {'f\'\'(x)':>12}")
 print('-'*65)
 
 for h in h_list:
@@ -613,10 +614,10 @@ for h in h_list:
     fmn = beda_mundur(f, x0, h)
     fp = beda_pusat(f, x0, h)
     fk = beda_kedua(f, x0, h)
-    print(f'{h:&gt;8.4f} {fm:&gt;12.6f} {fmn:&gt;12.6f} {fp:&gt;12.6f} {fk:&gt;12.6f}')
+    print(f'{h:>8.4f} {fm:>12.6f} {fmn:>12.6f} {fp:>12.6f} {fk:>12.6f}')
 
 # SESI 1B: Analisis Galat Tabel Error
-print(f"\n{'h':&gt;8} {'|E_maju|':&gt;12} {'|E_mundur|':&gt;12} {'|E_pusat|':&gt;12}")
+print(f"\n{'h':>8} {'|E_maju|':>12} {'|E_mundur|':>12} {'|E_pusat|':>12}")
 print('-' * 50)
 
 h_arr, e_maju, e_mundur, e_pusat = [], [], [], []
@@ -626,16 +627,16 @@ for h in h_list:
     emn = abs(beda_mundur(f, x0, h) - f_eksak_1)
     ep = abs(beda_pusat(f, x0, h) - f_eksak_1)
     h_arr.append(h); e_maju.append(em); e_mundur.append(emn); e_pusat.append(ep)
-    print(f'{h:&gt;8.4f} {em:&gt;12.2e} {emn:&gt;12.2e} {ep:&gt;12.2e}')
+    print(f'{h:>8.4f} {em:>12.2e} {emn:>12.2e} {ep:>12.2e}')
 
 # Verifikasi orde konvergensi: rasio galat ketika h dikecilkan 10x
 print()
-print('Rasio galat pusat ketika h -&gt; h/10 (harusnya ~100 untuk O(h²)):')
+print('Rasio galat pusat ketika h -> h/10 (harusnya ~100 untuk O(h²)):')
 e_p = np.array(e_pusat)
 for i in range(1, len(h_list)):
-    if e_p[i] &gt; 1e-14: # hindari galat pembulatan
+    if e_p[i] > 1e-14: # hindari galat pembulatan
         rasio = e_p[i-1]/e_p[i]
-        print(f'h={h_list[i-1]:.4f} -&gt; {h_list[i]:.4f}: rasio = {rasio:.2f}')
+        print(f'h={h_list[i-1]:.4f} -> {h_list[i]:.4f}: rasio = {rasio:.2f}')
 
 # SESI 1C: Grafik Log-Log Galat vs h
 h_fine = np.logspace(-15, 0, 200)
@@ -691,14 +692,14 @@ def beda_5titik(f, x, h):
     return (-f(x+2*h) + 8*f(x+h) - 8*f(x-h) + f(x-2*h)) / (12*h)
 
 def richardson(f, x, h):
-    # Richardson Extrapolation: O(h^2) -&gt; O(h^4)
+    # Richardson Extrapolation: O(h^2) -> O(h^4)
     D_h = beda_pusat(f, x, h)
     D_h2 = beda_pusat(f, x, h/2)
     return (4*D_h2 - D_h) / 3
 
 # Perbandingan semua metode
 print('=== PERBANDINGAN SEMUA METODE (f di x=2) ===')
-print(f"{'h':&gt;8} {'Pusat O(h²)':&gt;14} {'5-titik O(h⁴)':&gt;14} {'Richardson O(h⁴)':&gt;18}")
+print(f"{'h':>8} {'Pusat O(h²)':>14} {'5-titik O(h⁴)':>14} {'Richardson O(h⁴)':>18}")
 print('-' * 60)
 
 h_test = [0.5, 0.1, 0.05, 0.01, 0.001]
@@ -706,7 +707,7 @@ for h in h_test:
     ep = abs(beda_pusat(f, x0, h) - f_eksak_1)
     e5 = abs(beda_5titik(f, x0, h) - f_eksak_1)
     er = abs(richardson(f, x0, h) - f_eksak_1)
-    print(f'{h:&gt;8.3f} {ep:&gt;14.2e} {e5:&gt;14.2e} {er:&gt;18.2e}')
+    print(f'{h:>8.3f} {ep:>14.2e} {e5:>14.2e} {er:>18.2e}')
 
 # Grafik konvergensi semua metode
 harr2 = np.logspace(-6, 0, 100)
@@ -758,9 +759,9 @@ print(f'Kecepatan terminal v_T = {v_terminal} m/s')
 print(f'Jumlah titik data: {len(t_data)}')
 print(f'Interval waktu: dt = {t_data[1]-t_data[0]:.1f} s\n')
 
-print(f"{'t (s)':&gt;6} {'s_data (m)':&gt;12} {'s_true (m)':&gt;12}")
+print(f"{'t (s)':>6} {'s_data (m)':>12} {'s_true (m)':>12}")
 for i in range(0, len(t_data), 3):
-    print(f'{t_data[i]:&gt;6.1f} {s_data[i]:&gt;12.4f} {s_true[i]:&gt;12.4f}')
+    print(f'{t_data[i]:>6.1f} {s_data[i]:>12.4f} {s_true[i]:>12.4f}')
 
 # HITUNG KECEPATAN: v = ds/dt
 # Metode 1: numpy.gradient
@@ -779,10 +780,10 @@ v_eksak = v_terminal * np.tanh(g*t_data / v_terminal)
 a_numpy = np.gradient(v_numpy, t_data)
 a_eksak = g / np.cosh(g*t_data/v_terminal)**2
 
-print(f"\n{'t':&gt;5} {'v_numpy':&gt;10} {'v_manual':&gt;10} {'v_eksak':&gt;10} {'a_numpy':&gt;10} {'a_eksak':&gt;10}")
+print(f"\n{'t':>5} {'v_numpy':>10} {'v_manual':>10} {'v_eksak':>10} {'a_numpy':>10} {'a_eksak':>10}")
 print('-'*65)
 for i in range(len(t_data)):
-    print(f'{t_data[i]:&gt;5.1f} {v_numpy[i]:&gt;10.4f} {v_manual[i]:&gt;10.4f} {v_eksak[i]:&gt;10.4f} {a_numpy[i]:&gt;10.4f} {a_eksak[i]:&gt;10.4f}')
+    print(f'{t_data[i]:>5.1f} {v_numpy[i]:>10.4f} {v_manual[i]:>10.4f} {v_eksak[i]:>10.4f} {a_numpy[i]:>10.4f} {a_eksak[i]:>10.4f}')
 
 # VISUALISASI KINEMATIKA
 fig, axes = plt.subplots(1, 3, figsize=(16, 5))
@@ -855,13 +856,13 @@ GVD = (lamarr * 1e-6 / c_light) * d2n_dlam * 1e24 # ps²/km
 
 # Panjang gelombang Zero Dispersion (GVD=0)
 sign_change = np.where(np.diff(np.sign(GVD)))[0]
-lam_ZD = lamarr[sign_change[0]] if len(sign_change) &gt; 0 else None
+lam_ZD = lamarr[sign_change[0]] if len(sign_change) > 0 else None
 
 print('=== DISPERSI OPTIK KACA BK7 ===')
-print(f"{'λ (µm)':&gt;8} {'n(λ)':&gt;10} {'dn/dλ':&gt;12} {'d²n/dλ²':&gt;12} {'GVD':&gt;10}")
+print(f"{'λ (µm)':>8} {'n(λ)':>10} {'dn/dλ':>12} {'d²n/dλ²':>12} {'GVD':>10}")
 print('-'*60)
 for i in range(0, len(lamarr), 20):
-    print(f"{lamarr[i]:&gt;8.3f} {narr[i]:&gt;10.6f} {dn_dlam[i]:&gt;12.4e} {d2n_dlam[i]:&gt;12.4e} {GVD[i]:&gt;10.2f}")
+    print(f"{lamarr[i]:>8.3f} {narr[i]:>10.6f} {dn_dlam[i]:>12.4e} {d2n_dlam[i]:>12.4e} {GVD[i]:>10.2f}")
 if lam_ZD: print(f'\nPanjang gelombang Zero Dispersion: λ_ZD = {lam_ZD:.3f} µm')
 
 # Visualisasi Dispersi Optik
@@ -901,10 +902,10 @@ Harr = np.array([0.000, 0.054, 2.971, 5.911, 8.894, 11.937, 15.046, 18.223, 21.4
 
 Cp_grad = np.gradient(Harr, Tarr) * 1000 # J/(mol K)
 
-print(f"\n{'T (K)':&gt;6} {'H (kJ/mol)':&gt;12} {'Cp (J/mol·K)':&gt;14}")
+print(f"\n{'T (K)':>6} {'H (kJ/mol)':>12} {'Cp (J/mol·K)':>14}")
 print('-'*38)
 for i in range(len(Tarr)):
-    print(f"{Tarr[i]:&gt;6.0f} {Harr[i]:&gt;12.3f} {Cp_grad[i]:&gt;14.2f}")
+    print(f"{Tarr[i]:>6.0f} {Harr[i]:>12.3f} {Cp_grad[i]:>14.2f}")
 
 print(f'\nCp (298K) = {Cp_grad[0]:.2f} J/(mol K) (referensi: 29.12 J/mol K)')</code></pre>
         </div>
@@ -974,14 +975,14 @@ def simpson38(f, a, b, n):
 
 # ─── TABEL PERBANDINGAN UNTUK BERBAGAI n ─────────────────
 n_list = [2, 4, 8, 16, 32, 64, 128, 256]
-print(f"\n{'n':&gt;5} {'Trapesium':&gt;16} {'|E_trap|':&gt;12} {'Simpson 1/3':&gt;16} {'|E_simp|':&gt;12}")
+print(f"\n{'n':>5} {'Trapesium':>16} {'|E_trap|':>12} {'Simpson 1/3':>16} {'|E_simp|':>12}")
 print('-' * 70)
 for n in n_list:
     I_trap = trapesium(f, a, b, n)
     I_simp = simpson13(f, a, b, n)
     e_trap = abs(I_trap - I_eksak)
     e_simp = abs(I_simp - I_eksak)
-    print(f'{n:&gt;5} {I_trap:&gt;16.12f} {e_trap:&gt;12.2e} {I_simp:&gt;16.12f} {e_simp:&gt;12.2e}')
+    print(f'{n:>5} {I_trap:>16.12f} {e_trap:>12.2e} {I_simp:>16.12f} {e_simp:>12.2e}')
 
 # ─── ANALISIS ORDE KONVERGENSI: GRAFIK LOG-LOG ───────────
 n_arr = np.array([4, 8, 16, 32, 64, 128, 256, 512])
@@ -1039,7 +1040,7 @@ def romberg(f, a, b, max_level=8, tol=1e-12):
             R[n,m] = (4**m * R[n,m-1] - R[n-1,m-1]) / (4**m - 1)
             
         # Cek konvergensi
-        if n &gt; 0 and abs(R[n,n] - R[n-1,n-1]) &lt; tol:
+        if n > 0 and abs(R[n,n] - R[n-1,n-1]) < tol:
             return R[n,n], R[:n+1,:n+1], n
     return R[max_level,max_level], R, max_level
 
@@ -1080,7 +1081,7 @@ def gauss_legendre(f, a, b, n):
 
 # ─── PERBANDINGAN EFISIENSI: GALAT vs EVALUASI FUNGSI ────
 print('=== GAUSS-LEGENDRE vs TRAPESIUM vs SIMPSON ===')
-print(f"{'n_eval':&gt;7} {'Trapesium':&gt;14} {'Simpson':&gt;14} {'Gauss':&gt;14}")
+print(f"{'n_eval':>7} {'Trapesium':>14} {'Simpson':>14} {'Gauss':>14}")
 print('-' * 56)
 
 for n_gauss in [2, 3, 4, 5, 6, 8, 10]:
@@ -1090,7 +1091,7 @@ for n_gauss in [2, 3, 4, 5, 6, 8, 10]:
     e_t = abs(trapesium(f,a,b,n_trap) - I_eksak)
     e_s = abs(simpson13(f,a,b,n_simp) - I_eksak)
     e_g = abs(gauss_legendre(f,a,b,n_gauss) - I_eksak)
-    print(f'{n_gauss+1:&gt;7} {e_t:&gt;14.2e} {e_s:&gt;14.2e} {e_g:&gt;14.2e}')
+    print(f'{n_gauss+1:>7} {e_t:>14.2e} {e_s:>14.2e} {e_g:>14.2e}')
 
 # ─── KONVERGENSI GAUSS: FUNGSI ANALITIK vs TIDAK MULUS ───
 n_gauss_arr = np.arange(1, 20)
@@ -1136,10 +1137,10 @@ def periode_bandul(theta0_deg):
     return T_eks, T_gauss5
 
 print('=== PERIODE BANDUL NONLINEAR ===')
-print(f"{'θ ₀ (°)':&gt;8} {'T_eksak (s)':&gt;14} {'T_gauss5 (s)':&gt;14} {'T/T ₀':&gt;8}")
+print(f"{'θ ₀ (°)':>8} {'T_eksak (s)':>14} {'T_gauss5 (s)':>14} {'T/T ₀':>8}")
 for th in [10, 30, 60, 90, 120, 170]:
     T_eks, T_g5 = periode_bandul(th)
-    print(f'{th:&gt;8} {T_eks:&gt;14.8f} {T_g5:&gt;14.8f} {T_eks/T0:&gt;8.4f}')
+    print(f'{th:>8} {T_eks:>14.8f} {T_g5:>14.8f} {T_eks/T0:>8.4f}')
 
 # ============================================================
 # SESI 4B: Fungsi Partisi Termodinamika (Kapasitas Panas Debye)
@@ -1151,7 +1152,7 @@ def debye_Cv(T, theta_D=343.0, N=1):
         with np.errstate(over='ignore', invalid='ignore'):
             ex = np.exp(x)
             result = x**4 * ex / (ex - 1)**2
-        return np.where(x &lt; 1e-10, 1.0, result)
+        return np.where(x < 1e-10, 1.0, result)
     I, _ = integrate.quad(integrand, 1e-10, x_D)
     return 9 * N * kB * (T/theta_D)**3 * I
 
@@ -1161,20 +1162,301 @@ def debye_gauss(T, theta_D=343.0, n_pts=20):
         with np.errstate(over='ignore', invalid='ignore'):
             ex = np.exp(np.clip(x, 0, 700))
             r = x**4 * ex / (ex - 1)**2
-        return np.where(x &lt; 1e-10, 1.0, r)
+        return np.where(x < 1e-10, 1.0, r)
     I_gauss = gauss_legendre(integrand, 1e-10, x_D, n_pts)
     return 9 * (T/theta_D)**3 * I_gauss
 
 T_arr = np.array([10, 50, 100, 200, 300, 400, 500])
 print('\n=== KAPASITAS PANAS DEBYE (Aluminium, Θ_D = 343 K) ===')
-print(f"{'T (K)':&gt;6} {'C_V (Debye)':&gt;14} {'C_V (Gauss-10)':&gt;16}")
+print(f"{'T (K)':>6} {'C_V (Debye)':>14} {'C_V (Gauss-10)':>16}")
 for T in T_arr:
     cv_q = debye_Cv(T)
     cv_g = debye_gauss(T, n_pts=10)
-    print(f'{T:&gt;6} {cv_q:&gt;14.8f} {cv_g:&gt;16.8f}')</code></pre>
+    print(f'{T:>6} {cv_q:>14.8f} {cv_g:>16.8f}')</code></pre>
         </div>
     </div>
 
+    <div id="modul5" class="modul-content">
+        <h2 class="modul-title">Modul 5 - Matrix: Gaussian Elimination</h2>
+
+        <div class="session-container">
+            <h2>Sesi 1: Operasi Dasar Matriks dengan NumPy <button class="copy-btn" onclick="copyCode('code-m5-1', this)">Copy Code</button></h2>
+            <pre><code id="code-m5-1">#SESI 1: Operasi Dasar Matriks dengan NumPy
+#Praktikum Komputasi Fisika
+import numpy as np
+
+# --1.1 Definisi Matriks --
+A = np.array([[4, 3, -1], 
+              [2, 5, 7], 
+              [1, 6, 3]], dtype=float)
+
+b = np.array([10.0, 4.0, 15.0])
+
+print('Matriks A:\n', A)
+print('Ukuran A:', A.shape, '| Tipe:', A.dtype)
+
+# --1.2: Matriks Khusus --
+I = np.eye(3)                # Identitas
+D = np.diag([2.0, 5.0, 8.0]) # Diagonal
+Z = np.zeros((3, 3))         # Nol
+
+print('\nMatriks Identitas I:\n', I)
+print('Matriks Diagonal D:\n', D)
+
+# --1.3: Operasi-Operasi --
+B = np.array([[1, 0, 2], [3, 1, 0], [0, 2, 1]], dtype=float)
+
+print('\nA + B =\n', A + B)
+print('\n3A =\n', 3 * A)
+print('\nA @ B (perkalian matriks) =\n', A @ B)
+print('\nA.T (transpos) =\n', A.T)
+print('\ndet(A) =', round(np.linalg.det(A), 6))
+
+# --1.4: Pengindeksan --
+print('\nElemen A[1,2]:', A[1, 2])
+print('Baris ke-0:', A[0, :])
+print('Kolom ke-1:', A[:, 1])
+print('Submatriks A[0:2, 0:2]:\n', A[0:2, 0:2])
+
+# --1.5: Norm dan Kondisi --
+print('\nNorm Frobenius ||A||_F =', round(np.linalg.norm(A, 'fro'), 4))
+print('Kondisi number kappa(A) =', round(np.linalg.cond(A), 4))</code></pre>
+        </div>
+
+        <div class="session-container">
+            <h2>Sesi 2: Eliminasi Gauss dengan Partial Pivoting <button class="copy-btn" onclick="copyCode('code-m5-2', this)">Copy Code</button></h2>
+            <pre><code id="code-m5-2">#SESI 2: Eliminasi Gauss dengan Partial Pivoting
+import numpy as np
+
+def eliminasi_gauss(A, b, verbose=False):
+    """Menyelesaikan Ax=b dengan Eliminasi Gauss + Partial Pivoting.
+    Parameters:
+    A (ndarray): Matriks koefisien n x n
+    b (ndarray): Vektor konstanta (n,)
+    verbose : Tampilkan detail setiap langkah
+    Returns:
+    x (ndarray): Vektor solusi
+    """
+    n = len(b)
+    
+    # Salin ke matriks augmented jangan ubah input asli!
+    Aug = np.hstack([A.copy().astype(float), b.copy().reshape(-1,1).astype(float)])
+    
+    if verbose:
+        print('Augmented awal [A|b]:')
+        print(np.round(Aug, 4)); print()
+        
+    # FASE 1: FORWARD ELIMINATION dengan Partial Pivoting
+    for k in range(n):
+        # Partial pivoting: cari baris dengan nilai absolut terbesar
+        idx_pivot = np.argmax(np.abs(Aug[k:, k])) + k
+        
+        if idx_pivot != k:
+            Aug[[k, idx_pivot]] = Aug[[idx_pivot, k]]
+            if verbose:
+                print(f'[Pivot] Tukar baris {k} &lt;-&gt; {idx_pivot}')
+                
+        # Cek singularitas
+        if abs(Aug[k, k]) &lt; 1e-12:
+            raise ValueError(f'Matriks singular pada pivot k={k}!')
+            
+        # Eliminasi elemen di bawah pivot
+        for i in range(k+1, n):
+            m = Aug[i, k] / Aug[k, k] # Faktor pengali
+            Aug[i, :] -= m * Aug[k, :] # Operasi baris
+            
+        if verbose:
+            print(f'Setelah eliminasi kolom {k}:')
+            print(np.round(Aug, 4)); print()
+            
+    # FASE 2: BACK SUBSTITUTION (Substitusi Mundur)
+    x = np.zeros(n)
+    for i in range(n-1, -1, -1): # dari baris bawah ke atas
+        sigma = np.dot(Aug[i, i+1:n], x[i+1:n])
+        x[i] = (Aug[i, n] - sigma) / Aug[i, i]
+        
+    return x
+
+# UJI COBA
+if __name__ == '__main__':
+    A = np.array([[4, 3, -1], 
+                  [2, 5, 7], 
+                  [1, 6, 3]], dtype=float)
+    b = np.array([10.0, 4.0, 15.0])
+    
+    print('=== PROSES ELIMINASI (verbose) ===')
+    x = eliminasi_gauss(A, b, verbose=True)
+    
+    print('SOLUSI: ')
+    for i, xi in enumerate(x):
+        print(f' x_{i+1} = {xi:.6f}')
+        
+    # Verifikasi residual
+    resid = np.linalg.norm(A @ x - b)
+    print(f'\nResidual ||Ax-b|| = {resid:.2e} (idealnya ~ 0)')
+    
+    # Bandingkan dengan NumPy built-in
+    x_ref = np.linalg.solve(A, b)
+    print(f'Solusi NumPy: {x_ref}')
+    print(f'Solusi kita:  {x}')
+    print(f'Selisih maks: {np.max(np.abs(x - x_ref)):.2e}')</code></pre>
+        </div>
+
+        <div class="session-container">
+            <h2>Sesi 3: Invers Matriks & Determinan via Gauss-Jordan <button class="copy-btn" onclick="copyCode('code-m5-3', this)">Copy Code</button></h2>
+            <pre><code id="code-m5-3">#SESI 3: Invers Matriks (Gauss-Jordan) dan Determinan
+import numpy as np
+
+def gauss_jordan_invers(A):
+    """Hitung A^(-1) menggunakan metode Gauss-Jordan."""
+    n = A.shape[0]
+    Aug = np.hstack([A.copy().astype(float), np.eye(n)])
+    
+    for k in range(n):
+        # Partial pivoting
+        p = np.argmax(np.abs(Aug[k:, k])) + k
+        Aug[[k, p]] = Aug[[p, k]]
+        
+        if abs(Aug[k, k]) &lt; 1e-12:
+            raise ValueError('Matriks singular tidak ada invers!')
+            
+        # Normalisasi baris pivot
+        Aug[k, :] /= Aug[k, k]
+        
+        # Eliminasi ke ATAS dan ke BAWAH (Gauss-Jordan)
+        for i in range(n):
+            if i != k:
+                Aug[i, :] -= Aug[i, k] * Aug[k, :]
+                
+    return Aug[:, n:] # Invers ada di bagian kanan
+
+def hitung_determinan(A):
+    """Hitung det(A) menggunakan Eliminasi Gauss.
+    det = sign * produk elemen diagonal segitiga atas."""
+    n = A.shape[0]
+    M = A.copy().astype(float)
+    sgn = 1 # tanda berubah tiap pertukaran baris
+    
+    for k in range(n):
+        p = np.argmax(np.abs(M[k:, k])) + k
+        if p != k:
+            M[[k, p]] = M[[p, k]]
+            sgn *= -1
+            
+        if abs(M[k, k]) &lt; 1e-12:
+            return 0.0
+            
+        for i in range(k+1, n):
+            M[i, :] -= (M[i, k]/M[k, k]) * M[k, :]
+            
+    return sgn * np.prod(np.diag(M))
+
+if __name__ == '__main__':
+    A = np.array([[2, 1, -1], 
+                  [-3, -1, 2], 
+                  [-2, 1, 2]], dtype=float)
+                  
+    print('Matriks A:\n', A)
+    
+    det_kita = hitung_determinan(A)
+    det_np = np.linalg.det(A)
+    
+    print(f'\nDeterminan (kita): {det_kita:.6f}')
+    print(f'Determinan (NumPy): {det_np:.6f}')
+    
+    A_inv = gauss_jordan_invers(A)
+    print(f'\nInvers A (kita):\n{np.round(A_inv, 6)}')
+    print(f'Invers A (NumPy):\n{np.round(np.linalg.inv(A), 6)}')
+    
+    # Verifikasi: A @ A^(-1) harus = I
+    cek = A @ A_inv
+    print(f'\nA @ A^(-1) (harus = I):\n{np.round(cek, 8)}')
+    print(f'||A @ A_inv - I||_F = {np.linalg.norm(cek - np.eye(3)):.2e}')</code></pre>
+        </div>
+
+        <div class="session-container">
+            <h2>Sesi 4: Analisis Rangkaian 3 Mesh dengan KVL <button class="copy-btn" onclick="copyCode('code-m5-4', this)">Copy Code</button></h2>
+            <pre><code id="code-m5-4">#SESI 4: Analisis Rangkaian 3 Mesh dengan KVL
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Salin fungsi eliminasi_gauss dari Sesi 2 ke sini, atau:
+# from sesi2 import eliminasi_gauss
+
+def analisis_rangkaian():
+    # Matriks impedansi (dari KVL setiap mesh)
+    Z = np.array([[ 8, -3,  0],
+                  [-3,  9, -2],
+                  [ 0, -2,  8]], dtype=float)
+                  
+    V = np.array([15.0, 10.0, 5.0])
+    
+    print('Matriks Impedansi Z:\n', Z)
+    print('Vektor Tegangan V:', V)
+    print(f'det(Z) = {np.linalg.det(Z):.4f}')
+    print(f'kappa(Z) = {np.linalg.cond(Z):.4f}')
+    
+    # Selesaikan dengan Eliminasi Gauss 
+    # (Pastikan fungsi eliminasi_gauss sudah didefinisikan)
+    I = eliminasi_gauss(Z, V)
+    
+    print("\n--- HASIL ARUS ---")
+    for k in range(3):
+        print(f' I_{k+1} = {I[k]:.4f} A')
+        
+    # Hitung daya tiap elemen
+    R = [5, 3, 4, 2, 6]
+    Ir = [I[0], I[0]-I[1], I[1], I[1]-I[2], I[2]]
+    nm = ['R1', 'R2', 'R3', 'R4', 'R5']
+    
+    print('\n--- DAYA TIAP RESISTOR ---')
+    P_serap = 0
+    for n, r, ir in zip(nm, R, Ir):
+        p = r * ir**2
+        P_serap += p
+        print(f' P_{n} ({r}Ω) = {r} x ({ir:.4f})^2 = {p:.4f} W')
+        
+    P_sumber = sum(V[k]*I[k] for k in range(3))
+    
+    print(f'\nTotal daya diserap : {P_serap:.4f} W')
+    print(f'Total daya sumber  : {P_sumber:.4f} W')
+    print(f'Selisih (ΔP)       : {abs(P_serap - P_sumber):.2e} W')
+    print('(harus ~ 0 -> Hukum Kekekalan Energi)')
+    
+    # --- Visualisasi ---
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11, 4))
+    
+    # Bar chart arus mesh
+    bars = ax1.bar(['Mesh 1\n(I1)', 'Mesh 2\n(I2)', 'Mesh 3\n(I3)'],
+                   I, color=['#1F4E79','#2E75B6','#70AD47'],
+                   edgecolor='k', linewidth=0.8)
+                   
+    for bar, val in zip(bars, I):
+        ax1.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.02,
+                 f'{val:.3f}A', ha='center', fontsize=10, fontweight='bold')
+                 
+    ax1.set_title('Arus Setiap Mesh', fontsize=12)
+    ax1.set_ylabel('Arus (A)')
+    ax1.set_ylim(bottom=0)
+    ax1.grid(axis='y', alpha=0.3)
+    
+    # Bar chart daya
+    P_list = [r * ir**2 for r, ir in zip(R, Ir)]
+    ax2.bar(nm, P_list, color='#ED7D31', edgecolor='k', linewidth=0.8)
+    
+    ax2.set_title('Daya Serap Tiap Resistor', fontsize=12)
+    ax2.set_ylabel('Daya (W)')
+    ax2.grid(axis='y', alpha=0.3)
+    
+    plt.tight_layout()
+    plt.savefig('hasil_rangkaian.png', dpi=150)
+    plt.show()
+    print('Grafik disimpan: hasil_rangkaian.png')
+
+if __name__ == '__main__':
+    analisis_rangkaian()</code></pre>
+        </div>
+    </div>
     <script>
         function showModul(modulId, btnElement) {
             // Sembunyikan semua modul
